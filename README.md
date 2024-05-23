@@ -1,12 +1,18 @@
 # Horner Bible Reading Plan Generator
 
-This script generates a list of readings for the Horner Bible Reading Plan. You can read more about this reading plan [here](./horner_bible_reading_plan.pdf). 
+## Forward
+
+This script is a heavily-modified version of Jake Price's [script](https://github.com/jakeprice-me/horner-bible-reading-plan-generator).
+
+## Overview
+
+This script generates a list of daily or yearly readings for the Horner Bible Reading Plan. You can read more about this reading plan [here](./horner_bible_reading_plan.pdf). 
 
 The plan recommends using physical bookmarks in your bible, and moving each bookmark through each list as you progress. Personally I don't bother with the bookmarks and instead prefer a list I can work through and check off. If you've ever come across this plan before however (perhaps in a bible app), you'll find that once you go past the first year, you'll struggle to find any resources for the second year and onwards. So, this script aims to fix that and provide readers with lists for as long as they plan to do it.
 
 ## Configuration
 
-The configuration file `config.yml` is crucial to the script working. 
+The embedded configuration string `BIBLE_YAML` is crucial to the script working. 
 
 `readings_start` and `readings_end` specify the days you want to generate readings for. The script is "clever" enough to generate the correct readings for any day, spitting out readings as if you'd read through each list up until the day specified. So, if you specify a `readings_start` date of 654 the list will output the readings that you would be on if you'd worked through each list for the past 653 days.
 
@@ -42,10 +48,18 @@ list_n:
 Run the script as you would any other Python script.
 
 ```shell
-python main.py
+python horner_readings.py <optional_args>
 ```
 
 ## Output
+
+Choose the output with script arguments.
+
+## -d (daily, default)
+
+You'll get one day's readings, pulled automatically with [`meaningless`](https://pypi.org/project/meaningless/)
+
+## -y (year)
 
 You'll get a list of readings, which you can either take as is, or massage into another format (markdown checkbox list for example).
 
