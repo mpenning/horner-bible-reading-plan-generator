@@ -140,8 +140,9 @@ class BibleChapter:
 class JsonBookmark:
     """A bible bookmark datestamp that updates no more than every 24 hours"""
 
-    def __init__(self):
+    def __init__(self, args):
         self.filepath = os.path.expanduser("~/.horner_bible_readings.json")
+        self.args = args
 
         if not os.path.exists(self.filepath):
             self.create_bookmark()
@@ -156,10 +157,17 @@ class JsonBookmark:
     def day_index_number(self):
         return int(self.bookmark["day_index_number"])
 
+    @property
+    def translation(self):
+        return self.bookmark["translation"]
+
     def create_bookmark(self):
         """Create a new json bookmark file in ~/.horner_bible_readings.json"""
 
-        bookmark = {"day_index_number": 0, "last_updated": str(arrow.now())}
+        if self.translation == "":
+            raise ValueError("Cannot save translation preferences without a translation.  Use -t from the CLI")
+
+        bookmark = {"day_index_number": 0, "last_updated": str(arrow.now()), "translation": self.args.translation}
 
         with open(self.filepath, 'w') as fh:
             json.dump(bookmark, fh)
@@ -172,17 +180,22 @@ class JsonBookmark:
 
         # If past midnight since the last reading, bump the day index number...
         now = arrow.now()
-        if (now - arrow.get(update_date)).days > 0:
-            if self.day_index_number < 365:
-                self.bookmark["day_index_number"] += 1
-            else:
-                self.bookmark["day_index_number"] = 0
+        days = (now - arrow.get(update_date)).days
+        if (args.save_settings is True) or (days > 0):
+            if (days > 0):
+                if self.day_index_number < 365:
+                    self.bookmark["day_index_number"] += 1
+                else:
+                    self.bookmark["day_index_number"] = 0
+
+            # Update translation in the settings file if --save_settings is used
+            if args.save_settings is True:
+                self.bookmark["translation"] = self.args.translation
 
             self.bookmark["last_updated"] = str(now)
 
             with open(self.filepath, 'w') as fh:
                 json.dump(self.bookmark, fh)
-
 
 def parse_args():
     """Parse the command-line arguments"""
@@ -193,11 +206,14 @@ def parse_args():
                         action='store_true',
                         help="Daily readings, default")
     parser.add_argument("-y","--year",
-                        action='store_true', 
+                        action='store_true',
                         help="Yearly readings")
     parser.add_argument("-t", "--translation",
                         choices=("NASB1995", "NIV", "ASV", "ESV", "KJV", "NKJV"),
-                        default="NASB1995")
+                        default="")
+    parser.add_argument("-s", "--save_settings",
+                        action='store_true',
+                        help="Save settings to the preferences file")
     return parser.parse_args()
 
 
@@ -305,10 +321,12 @@ def print_year_of_readings():
             sep=", ",
         )
 
-def print_todays_readings(translation="NASB1995"):
+def print_todays_readings(args):
     all_chapter_lists = build_readings()
 
-    day_index_number = JsonBookmark().day_index_number
+    bookmark = JsonBookmark(args=args)
+
+    day_index_number = bookmark.day_index_number
 
     readings = (all_chapter_lists[0][day_index_number % len(all_chapter_lists[0])],
                 all_chapter_lists[1][day_index_number % len(all_chapter_lists[1])],
@@ -321,6 +339,12 @@ def print_todays_readings(translation="NASB1995"):
                 all_chapter_lists[8][day_index_number % len(all_chapter_lists[8])],
                 all_chapter_lists[9][day_index_number % len(all_chapter_lists[9])],)
 
+    if args.translation != "" and args.translation != bookmark.translation:
+        translation = args.translation
+    else:
+        translation = bookmark.translation
+
+    print("Translation:", translation)
     print("TODAY", readings)
     for bible_chapter in readings:
         print(bible_chapter.get_url(translation=translation))
@@ -331,7 +355,7 @@ if __name__=="__main__":
     if args.year:
         print_year_of_readings()
     elif args.daily:
-        print_todays_readings(translation=args.translation)
+        print_todays_readings(args=args)
     else:
         # Default to today's readings
-        print_todays_readings(translation=args.translation)
+        print_todays_readings(args=args)
