@@ -164,7 +164,7 @@ class JsonBookmark:
     def create_bookmark(self):
         """Create a new json bookmark file in ~/.horner_bible_readings.json"""
 
-        if self.translation == "":
+        if self.args.translation == "":
             raise ValueError("Cannot save translation preferences without a translation.  Use -t from the CLI")
 
         bookmark = {"day_index_number": 0, "last_updated": str(arrow.now()), "translation": self.args.translation}

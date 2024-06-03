@@ -10,9 +10,15 @@ This script generates a list of daily or yearly readings for the Horner Bible Re
 
 The plan recommends using physical bookmarks in your bible, and moving each bookmark through each list as you progress. Personally I don't bother with the bookmarks and instead prefer a list I can work through and check off. If you've ever come across this plan before however (perhaps in a bible app), you'll find that once you go past the first year, you'll struggle to find any resources for the second year and onwards. So, this script aims to fix that and provide readers with lists for as long as they plan to do it.
 
-## Configuration
+## Json bookmark / preferences file
 
-The embedded configuration string `BIBLE_YAML` is crucial to the script working. 
+The first time this script runs, it creates a json file in `~/.horner_bible_readings.json`.  This file keeps track of your translation preferences and also tracks your the last read chapters bookmark.
+
+This script automatically advances your readings bookmark in the json file at midnight (local time) every time you run the script.
+
+## Readings Configuration
+
+The embedded Bible readings configuration string `BIBLE_YAML` is crucial to the script working. 
 
 `readings_start` and `readings_end` specify the days you want to generate readings for. The script is "clever" enough to generate the correct readings for any day, spitting out readings as if you'd read through each list up until the day specified. So, if you specify a `readings_start` date of 654 the list will output the readings that you would be on if you'd worked through each list for the past 653 days.
 
