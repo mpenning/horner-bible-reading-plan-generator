@@ -4,17 +4,17 @@
 
 This script is a heavily-modified version of Jake Price's [script](https://github.com/jakeprice-me/horner-bible-reading-plan-generator).
 
+Most notably, this script defaults to automatic daily downloads of the current Bible chapter readings from [biblegateway](https://biblegateway.com) via the [meaningless](https://pypi.org/project/meaningless/) module.  However, if you prefer to use your own Bible and manually track reading progress, you can still get the original yearly readings with a CLI argument.
+
 ## Overview
 
 This script generates a list of daily or yearly readings for the Horner Bible Reading Plan. You can read more about this reading plan [here](./horner_bible_reading_plan.pdf). 
 
-The plan recommends using physical bookmarks in your bible, and moving each bookmark through each list as you progress. Personally I don't bother with the bookmarks and instead prefer a list I can work through and check off. If you've ever come across this plan before however (perhaps in a bible app), you'll find that once you go past the first year, you'll struggle to find any resources for the second year and onwards. So, this script aims to fix that and provide readers with lists for as long as they plan to do it.
-
 ## Json bookmark / preferences file
 
-The first time this script runs, it creates a json file in `~/.horner_bible_readings.json`.  This file keeps track of your translation preferences and also tracks your the last read chapters bookmark.
+The first time this script runs, it creates a json file in `~/.horner_bible_readings.json`.  This file is primarily used for daily readings; it keeps track of your translation preferences and also tracks your the last read chapters bookmark.
 
-This script automatically advances your readings bookmark in the json file at midnight (local time) every time you run the script.
+When using daily readings, this script automatically advances your readings bookmark in the json file at midnight (local time) every time you run the script.
 
 ## Readings Configuration
 
@@ -61,6 +61,10 @@ python horner_readings.py <optional_args>
 
 Choose the output with script arguments.
 
+## -t [TRANSLATION]
+
+Specify the Bible translation that you prefer to read; this is only meaningful when generating daily readings, which are the default.
+
 ## -d (daily, default)
 
 You'll get one day's readings, pulled automatically with [`meaningless`](https://pypi.org/project/meaningless/)
@@ -85,5 +89,5 @@ You'll get a list of readings, which you can either take as is, or massage into 
 
 ## Future Improvements
 
-I plan on adding a few styles of output in the future (plain text, csv, markdown etc), and a few different output formats (html, text, pdf, etc).
+We could add a few styles of yearly output in the future (plain text, csv, markdown etc), and a few different output formats (html, text, pdf, etc).
 
