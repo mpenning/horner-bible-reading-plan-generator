@@ -130,7 +130,7 @@ class BibleChapter:
     def __repr__(self):
         return self.__str__()
 
-    def get_url(self, translation="NASB1995"):
+    def get_url(self, translation="ESV"):
         """Download and return the BibleChapter from BibleGateway.com"""
 
         bible = WebExtractor(translation=translation)
